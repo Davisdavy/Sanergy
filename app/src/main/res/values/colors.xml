@@ -4,5 +4,6 @@
     <color name="colorBgLight">#179aca</color>
     <color name="colorText">#ffffff</color>
     <color name="colorAlt">#edda35</color>
+    <color name="colorTextLight">#D1D1D1</color>
     <color name="colorForeign">#241E20</color>
 </resources>

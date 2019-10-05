@@ -26,9 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.moringa.sanergyapp.R;
 
-import com.moringa.sanergyapp.adapters.EmpAdapter;
-import com.moringa.sanergyapp.models.Employees;
-
 import java.util.ArrayList;
 import java.util.List;
 
