@@ -3,9 +3,11 @@ package com.moringa.sanergyapp.ui;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
@@ -25,182 +28,107 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.moringa.sanergyapp.R;
+import com.moringa.sanergyapp.adapters.PagerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity {
-    private List<Employees> employeesList = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private EmpAdapter mAdapter;
-    private FloatingActionButton fab;
+
+    @BindView(R.id.profile)
+    TextView mProfile;
+    @BindView(R.id.employees)
+    TextView mEmployees;
+    @BindView(R.id.notifications)
+    TextView mNotifications;
+    @BindView(R.id.mainPager)
+    ViewPager mMainViewPager;
+
+    private PagerViewAdapter mPagerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setTitle("Administrator");
+        ButterKnife.bind(this);
+        getSupportActionBar().hide();
 
-        initCollapsingToolbar();
+        mPagerViewAdapter = new PagerViewAdapter(getSupportFragmentManager());
+        mMainViewPager.setAdapter(mPagerViewAdapter);
+        mMainViewPager.setOffscreenPageLimit(2);
+        mMainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+            }
 
-        employeesList = new ArrayList<>();
-        mAdapter = new EmpAdapter(this, employeesList);
+            @Override
+            public void onPageSelected(int position) {
+                changeTabs(position);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+            }
 
-        prepareAlbums();
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
-        try {
-            Glide.with(this).load(R.drawable.conference).into((ImageView) findViewById(R.id.backdrop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+        });
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddEmployeeActivity.class);
-                startActivity(intent);
+                mMainViewPager.setCurrentItem(0);
             }
         });
-    }
-
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar title on scroll
-     */
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
+        mEmployees.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle("Employees");
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
+            public void onClick(View view) {
+                mMainViewPager.setCurrentItem(1);
+            }
+        });
+        mNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainViewPager.setCurrentItem(0);
             }
         });
     }
 
-    /**
-     * Adding few albums for testing
-     */
-    private void prepareAlbums() {
-        int[] covers = new int[]{
-                R.drawable.guy1,
-                R.drawable.guy2,
-                R.drawable.guy3,
-                R.drawable.guy4,
-                R.drawable.guy5,
-                R.drawable.guy6,
-                R.drawable.guy7,
-                R.drawable.guy8,
-                R.drawable.guy9,
-                R.drawable.user,
-                R.drawable.user};
+    private void changeTabs(int position) {
+        if(position == 0){
+            mProfile.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorText));
+            mProfile.setTextSize(22);
 
-        Employees a = new Employees("Samuel Okoth", 13, "Manager", covers[0]);
-        employeesList.add(a);
+            mEmployees.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mEmployees.setTextSize(17);
 
-        a = new Employees("Wafula Davis", 8, "Manager", covers[1]);
-        employeesList.add(a);
-
-        a = new Employees("Janice Mukenyi", 11, "Manager", covers[2]);
-        employeesList.add(a);
-
-        a = new Employees("Yommie Samora", 12, "Manager", covers[3]);
-        employeesList.add(a);
-
-        a = new Employees("John Onyango", 14, "Manager", covers[4]);
-        employeesList.add(a);
-
-        a = new Employees("Wilfred Ouma", 1, "Manager", covers[5]);
-        employeesList.add(a);
-
-
-
-        a = new Employees("Sarah Munini", 11, "Manager", covers[6]);
-
-
-        a = new Employees("Joe Munyi", 14, "Manager", covers[7]);
-        employeesList.add(a);
-
-        a = new Employees("Nimo Said", 11, "Manager", covers[8]);
-        employeesList.add(a);
-
-        a = new Employees("Levert Ouma", 17, "Manager", covers[9]);
-        employeesList.add(a);
-
-        mAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * RecyclerView item decoration - give equal margin around grid item
-     */
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
+            mNotifications.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mNotifications.setTextSize(17);
         }
+        if(position == 1){
+            mProfile.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mProfile.setTextSize(17);
 
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
+            mEmployees.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorText));
+            mEmployees.setTextSize(22);
 
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
+            mNotifications.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mNotifications.setTextSize(17);
         }
-    }
+        if(position == 2){
+            mProfile.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mProfile.setTextSize(17);
 
-    /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+            mEmployees.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorTextLight));
+            mEmployees.setTextSize(17);
+
+            mNotifications.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorText));
+            mNotifications.setTextSize(22);
+        }
     }
 
     @Override

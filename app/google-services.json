@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "634334725769-oj4ivbimkp9ho9ecg85fcjtis83vjmpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moringa.sanergyapp",
+            "certificate_hash": "fcd3f824755ad72465c3b9f033eec2d010c2aa89"
+          }
+        },
+        {
           "client_id": "634334725769-f425s2alaak6l1a3lbdkg4nhettff5n9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
