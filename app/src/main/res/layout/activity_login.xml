@@ -26,7 +26,7 @@
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:textColor="@android:color/black"
-            android:textColorHint="@color/colorAlt"
+            android:textColorHint="@color/colorForeign"
             android:textSize="20sp" />
 
         <EditText
@@ -39,7 +39,7 @@
             android:nextFocusDown="@+id/passwordEditText"
             android:padding="10dp"
             android:textColor="@android:color/black"
-            android:textColorHint="@color/colorAlt"
+            android:textColorHint="@color/colorForeign"
             android:textSize="20sp" />
 
 
