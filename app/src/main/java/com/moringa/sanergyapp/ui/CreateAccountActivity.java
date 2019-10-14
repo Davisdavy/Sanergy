@@ -138,6 +138,14 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE);
             }
         });
+        mLoginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreateAccountActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void sendToMain() {
@@ -151,10 +159,10 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-    if(requestCode == PICK_IMAGE){
-        mImageUri = data.getData();
-        mAdminImage.setImageURI(mImageUri);
-    }
+        if(requestCode == PICK_IMAGE){
+           mImageUri = data.getData();
+           mAdminImage.setImageURI(mImageUri);
+        }
     }
 
     @Override
